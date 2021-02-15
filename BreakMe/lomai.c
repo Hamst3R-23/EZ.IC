@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("LOMAI VSE CHTO VIDISH");
+    printf("ya chto to izmenil");
     return 0;
 }
