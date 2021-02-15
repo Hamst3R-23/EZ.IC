@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("ya chto to izmenil");
+    printf("pray or becomme prey");
     return 0;
 }
