@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("pray or becomme prey");
+    printf("blyt,remades 've been stolen by democrats");
     return 0;
 }
