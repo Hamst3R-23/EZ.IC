@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdio.h>
+#include <stdint.h>
 
 struct Position // Позиция
 {
@@ -58,7 +59,7 @@ void print_snake(struct snake_4 snake)
 }
 
 // Сместить змею по вектору
-void move_snake(struct snake_4 *snake, uint64_t delta_y, uint64_t delta_x)
+void move_snake(struct snake_4 *snake, int64_t delta_y, int64_t delta_x)
 {
     snake->head_3.x = snake->head_2.x;
     snake->head_3.y = snake->head_2.y;
@@ -124,7 +125,6 @@ int main()
     refresh();
 
     halfdelay(2);                                // ! Каждый тик 0.2 секунды
-
     // * Главный игровой цикл * //
     while (!exit)
     {
@@ -182,9 +182,11 @@ int main()
 
     }
 
-    while (( ch = getch()) != 'q') // Выход // ! временный костыль
+    while (!exit) // Выход // ! временный костыль
     {
-        
+        ch = getch();
+        if (ch == 'q')
+            exit = 1;
     }
 
     endwin();
