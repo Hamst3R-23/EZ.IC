@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 
-typedef struct  // Позиция
+typedef struct  // Позиция или Вектор
 {
     int64_t y;
     int64_t x;
@@ -29,7 +29,7 @@ typedef struct
 
     Position forward_vector;
 
-    enum Gun guns_vector;
+    enum Gun guns_direction;
 
 } Tank;
 
@@ -78,7 +78,7 @@ void print_tank(Tank tank)
     }
 
     // БАШНАЯ //
-    switch (tank.guns_vector)
+    switch (tank.guns_direction)
     {
     case FORWARD_LEFT:
         mvaddch(tank.head.y - 1, tank.head.x - 1, '\\');
@@ -134,6 +134,13 @@ int main()
     noecho(); // Не выводить символы
     curs_set(0); // Отключить курсор
     keypad(stdscr, true); // Корректный вывод системных кпопок
+
+    // * ЗАГОТОВКИ ЦВЕТОВ * //
+    start_color();
+    init_pair(1, COLOR_WHITE, COLOR_BLACK); // СТАНДАРТ
+    init_pair(2, COLOR_BLUE, COLOR_BLACK);  // СОЮЗНИК
+    init_pair(3, COLOR_RED, COLOR_BLACK);   // ПРОТИВНИК
+    color_set(1, NULL);
     uint8_t exit = 0; // Проверка выхода
 
     Tank player;
@@ -143,7 +150,7 @@ int main()
     player.forward_vector.y = 0;
     player.forward_vector.x = 1;
     
-    player.guns_vector = FORWARD;
+    player.guns_direction = FORWARD;
     
     // * Игровое поле * //
     struct Field arena = {LINES, COLS};
@@ -159,7 +166,9 @@ int main()
     // * Первая отрисовка * //
     clear();
     box(stdscr, 0, 0);
+    color_set(2, NULL);
     print_tank(player);
+    color_set(1, NULL);
     refresh();
 
 // * Главный игровой цикл * //
@@ -192,28 +201,28 @@ int main()
             break;
 
         case 'q':
-            player.guns_vector = FORWARD_LEFT;
+            player.guns_direction = FORWARD_LEFT;
             break;
         case 'w':
-            player.guns_vector = FORWARD;
+            player.guns_direction = FORWARD;
             break;
         case 'e':
-            player.guns_vector = FORWARD_RIGHT;
+            player.guns_direction = FORWARD_RIGHT;
             break;
         case 'a':
-            player.guns_vector = LEFT;
+            player.guns_direction = LEFT;
             break;
         case 'd':
-            player.guns_vector = RIGHT;
+            player.guns_direction = RIGHT;
             break;
         case 'z':
-            player.guns_vector = BACK_LEFT;
+            player.guns_direction = BACK_LEFT;
             break;
         case 'x':
-            player.guns_vector = BACK;
+            player.guns_direction = BACK;
             break;
         case 'c':
-            player.guns_vector = BACK_RIGHT;
+            player.guns_direction = BACK_RIGHT;
             break;
 
         case 'p': // Выход
@@ -222,7 +231,9 @@ int main()
         }
 
         box(stdscr, 0, 0);
+        color_set(2, NULL);
         print_tank(player);
+        color_set(1, NULL);
         refresh();
     }
 
