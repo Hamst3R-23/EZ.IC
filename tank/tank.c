@@ -33,6 +33,13 @@ typedef struct
 
 } Tank;
 
+struct Field // Игровое поле
+{
+    uint32_t height;
+    uint32_t width;
+};
+
+
 void print_char_position(Position p, char ch)
 {
     mvaddch(p.y, p.x, ch);
@@ -100,10 +107,20 @@ void print_tank(Tank tank)
     }
 }
 
-void move_tank(Tank *tank, int64_t delta_y, int64_t delta_x)
+void move_tank(Tank *tank, int64_t delta_y, int64_t delta_x, struct Field *arena)
 {
-    tank->head.y = tank->head.y + delta_y;
-    tank->head.x = tank->head.x + delta_x; 
+    // TODO: придумать способ с меньшим количеством проверок        (ОПТИМИЗАЦИЯ)
+    // TODO: разобратся с границами поля, придумать как задать свое (УСЛОЖНЕНИЕ)
+    if ( 
+    ((tank->head.y + delta_y) != 1 )                && // Верхняя граница
+    ((tank->head.y + delta_y) != arena->height - 2) && // Нижняя граница
+    ((tank->head.x + delta_x) != 1)                 && // Левая граница
+    ((tank->head.x + delta_x) != arena->width - 2)     // Правая граница
+    )
+    {
+        tank->head.y = tank->head.y + delta_y;
+        tank->head.x = tank->head.x + delta_x; 
+    }
 }
 
 int main()
@@ -128,7 +145,8 @@ int main()
     
     player.guns_vector = FORWARD;
     
-
+    // * Игровое поле * //
+    struct Field arena = {LINES, COLS};
 
     // * Привет! * // 
     mvaddstr(LINES / 2, COLS / 2 - 10, str_hello);
@@ -153,22 +171,22 @@ int main()
         switch (ch)
         {
         case KEY_UP: // Вверх
-            move_tank(&player, -1, 0);
+            move_tank(&player, -1, 0, &arena);
             player.forward_vector.y = -1;
             player.forward_vector.x = 0;
             break;
         case KEY_DOWN: // Вниз
-            move_tank(&player, 1, 0);
+            move_tank(&player, 1, 0, &arena);
             player.forward_vector.y = 1;
             player.forward_vector.x = 0;
             break;
         case KEY_RIGHT: // Вправо
-            move_tank(&player, 0, 1);
+            move_tank(&player, 0, 1, &arena);
             player.forward_vector.y = 0;
             player.forward_vector.x = 1;
             break;
         case KEY_LEFT: // Влево
-            move_tank(&player, 0, -1);
+            move_tank(&player, 0, -1, &arena);
             player.forward_vector.y = 0;
             player.forward_vector.x = -1;
             break;
