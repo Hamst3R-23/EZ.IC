@@ -1,38 +1,43 @@
 #include <ncurses.h>
 #include <stdio.h>
 
+struct xboct
+{
+	int x;
+	int y;
+	int age;
+};
+
+
+
 int main(void)
 {
 	initscr();
-	uint32_t ch;
-	
+	keypad(stdscr,TRUE);
+	curs_set(0);
+	noecho();
 
-	struct xboct
-	{
-		int x;
-		int y;
-		int digit;
-	};
+	uint32_t ch;
 
 	struct xboct mass[4];
 
 	char oper = '0';
 	int count = 0;
 	
-	int y = LINES/2;
-	int x = COLS/2; 
-	int help;
+	int current_y = LINES/2;
+	int current_x = COLS/2; 
+	int temp;
 
 	mass[0].x = COLS/2;
 	mass[0].y = LINES/2;
 	
-	mass[0].digit = 0;
-	mass[1].digit = 3;
-	mass[2].digit = 2;
-	mass[3].digit = 1;
+	mass[0].age = 0; // АААААААААА
+	mass[1].age = 3; // Это возраст, ебануться
+	mass[2].age = 2; // Ты ебанный псих
+	mass[3].age = 1; // Пиздец, только псих может такое придумать
 
-	keypad(stdscr,TRUE);
-	curs_set(0);
+	
+
 	mvaddch(LINES/2,COLS/2,'*');
 	while((ch = getch()) != 'q')
 	{
@@ -40,9 +45,9 @@ int main(void)
 		{
 			for(int i = 0; i < 4;i++)//Iscli4enie nepravilnoi situation
 			{
-				for (int j = 0; j < 4 ;j++)
-				{
-					if(mass[i].digit == 3 && mass[j].digit == 2)
+				for (int j = 0; j < 4 ;j++) // Я честно пытался понять, что ты тут пытаешься отловить, но так и не понял
+				{							// Все и так норм работает, что тут должно исправлятся я не понимаю
+					if(mass[i].age == 3 && mass[j].age == 2)
 					{
 						if(ch == KEY_UP && mass[i].y - 1 == mass[j].y)
 						{
@@ -68,7 +73,7 @@ int main(void)
 				}
 			}
 
-			if (count != 0)
+			if (count != 0) 
 			{
 				count = 0;
 				continue;
@@ -78,32 +83,32 @@ int main(void)
 			{
 				for(int j = 0;j < 4;j++)// dve {
 				{
-					if(mass[i].digit == 3 && mass[j].digit == 0 && i != j)
+					if(mass[i].age == 3 && mass[j].age == 0 && i != j)
 					{
 						
-						x = mass[i].x;
-						y = mass[i].y;
+						current_x = mass[i].x;
+						current_y = mass[i].y;
 						
-						help =	mass[i].x;
+						temp =	mass[i].x;
 						mass[i].x = mass[j].x;
-						mass[j].x = help;
+						mass[j].x = temp;
 
-						help =	mass[i].y;
+						temp =	mass[i].y;
 						mass[i].y = mass[j].y;
-						mass[j].y = help;
+						mass[j].y = temp;
 
 					}
-					if(mass[i].digit == 2 && mass[j].digit == 1 && i != j)
+					if(mass[i].age == 2 && mass[j].age == 1 && i != j)
 					{
 						
 						
-						help =	mass[i].x;
+						temp =	mass[i].x;
 						mass[i].x = mass[j].x;
-						mass[j].x = help;
+						mass[j].x = temp;
 
-						help =	mass[i].y;
+						temp =	mass[i].y;
 						mass[i].y = mass[j].y;
-						mass[j].y = help;
+						mass[j].y = temp;
 					}
 				}							
 			}
@@ -111,47 +116,60 @@ int main(void)
 		}
 	
 		if(ch == KEY_UP) //dvizhenie golovi
-			{
-			y--;
-			mvaddch(y,x,'*');
+		{
+			current_y--; 
+			mvaddch(current_y,current_x,'*'); // Почему вывод основаны на x,y, а не на положении головы
+										      // Двигай голову верх вниз и рисуй её, а не выводи позицию (1/2)
 			oper = 'u';
-			}
+		}
 	
 	
 		if(ch == KEY_DOWN)
-			{
-			y++;
-			mvaddch(y,x,'*');
+		{
+			current_y++;
+			mvaddch(current_y,current_x,'*');
 			oper = 'd';
-			}
+		}
 
 		if(ch == KEY_LEFT)
-			{
-				x--;
-				mvaddch(y,x,'*');
-				oper = 'l';
-			}
+		{
+			current_x--;
+			mvaddch(current_y,current_x,'*');
+			oper = 'l';
+		}
 	
 		if(ch == KEY_RIGHT)
-			{
-				x++;
-				mvaddch(y,x,'*');
-				oper = 'r';
-			}
+		{
+			current_x++;
+			mvaddch(current_y,current_x,'*');
+			oper = 'r';
+		}
 
 		for(int i = 0; i < 4;i++)//dobavlenie k kajdoi 4asti zmei god zhizni
-			{
-					mass[i].digit++;
-					if(mass[i].digit == 4)// pri 4 godah XBOCT otmiraet
-					{
-						if(x != mass[i].x || y != mass[i].y)//Yslovie kogda golova ne  vstaet na mesto XBOCTa
-						mvaddch(mass[i].y,mass[i].x,' ');
-
-						mass[i].x = x;//otrashivanie golovi
-						mass[i].y = y;
-						mass[i].digit = 0;
-					}
-			}
+		{
+				mass[i].age++;
+				if(mass[i].age == 4)// pri 4 godah XBOCT otmiraet // Зачем проверять 4 раза, если в 100 случаях из 100 отмирает последний хвост?
+				{
+					if(current_x != mass[i].x || current_y != mass[i].y)//Yslovie kogda golova ne  vstaet na mesto XBOCTa
+					mvaddch(mass[i].y,mass[i].x,' '); // 
+													  /*
+													   * Лучше не закрашивать последний хвост, а перерисовывай все заново
+													   * Вот смотри: 
+													   * ты загружаешь в буффер новое положение головы и последний хвост (' ') (2 символа)
+													   * ИЛИ
+													   * ты затираешь весь экран и рисуешь 4 *звездочки* (4 символа)
+													   * 
+													   * НО,
+													   * В первом случае, ты делаешь 4 х 2 проверок, но выводишь 2 символа
+													   * Во втором случае, ты делаешь 0 проверок, но выводишь 4 символа + отчистка экрана
+													   * 
+													   * Я, конечно, не эксперт, но лучше 4 символа выводить, а не 8 проверок делать
+													  */
+					mass[i].x = current_x;//otrashivanie golovi 
+					mass[i].y = current_y;// Вот. Ты же записываешь координаты головы в массив
+					mass[i].age = 0;	  // Выводи по этим координатам, а то в чем смысл массива. Просто хранить координаты?
+				}
+		}
 	
 
 
