@@ -3,7 +3,7 @@
 int main(){
 	int ch;
 	int k;
-	int mas1[4][2] = {3,3,2,3,1,3,0,3};
+	int mas1[4][2] = {3,3,2,3,1,3,0,3}; // Нравится такое решение. Одобряю.
 	char mas2[] = {'+','*','*','*'};
 	initscr();
 	keypad(stdscr,TRUE);
@@ -13,40 +13,40 @@ int main(){
 	refresh();
 	while ((ch=getch())!='q'){
 		clear();
-		if (ch == KEY_UP){
-			for(k=3; k>0; k--){
+		if (ch == KEY_UP){ // switch case, пожалуйста. Это элементарная кострукция, которая проходится на первом занятии по Си
+			for(k=3; k>0; k--){ // !!! Этот кусок должен быть отдельной функцией, чтоб не засорять код
 				mas1[k][0] = mas1[k-1][0];
 				mas1[k][1] = mas1[k-1][1];
 			}
 			mas1[0][0]--;
-			for(int k=0; k<4; k++)
+			for(int k=0; k<4; k++) // !!!
 				mvaddch(mas1[k][0],mas1[k][1],mas2[k]);		
 		}
-		if (ch == KEY_DOWN){
-			for(k=3; k>0; k--){
+		if (ch == KEY_DOWN){ 
+			for(k=3; k>0; k--){ // !!!
 				mas1[k][0] = mas1[k-1][0];
 				mas1[k][1] = mas1[k-1][1];
 			}
 			mas1[0][0]++;
-			for(int k=0; k<4; k++)
+			for(int k=0; k<4; k++) // !!!
 				mvaddch(mas1[k][0],mas1[k][1],mas2[k]);				
 		}
 		if (ch == KEY_RIGHT){
-			for(k=3; k>0; k--){
+			for(k=3; k>0; k--){ // !!!
 				mas1[k][0] = mas1[k-1][0];
 				mas1[k][1] = mas1[k-1][1];
 			}
 			mas1[k][1]++;
-			for(int k=0; k<4; k++)
+			for(int k=0; k<4; k++) // !!!
 				mvaddch(mas1[k][0],mas1[k][1],mas2[k]);					
 		}
 		if (ch == KEY_LEFT){
-			for(k=3; k>0; k--){
+			for(k=3; k>0; k--){ // !!!
 				mas1[k][0] = mas1[k-1][0];
 				mas1[k][1] = mas1[k-1][1];
 			}
 			mas1[k][1]--;
-			for(int k=0; k<4; k++)
+			for(int k=0; k<4; k++) // !!!
 				mvaddch(mas1[k][0],mas1[k][1],mas2[k]);	
 		}
 		refresh();
