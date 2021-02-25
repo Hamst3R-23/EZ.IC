@@ -8,7 +8,8 @@ int main(){
 	initscr();
 	keypad(stdscr,TRUE);
 	for(int i=0; i<4; i++)
-		mvaddch(mas1[i][0],mas1[i][1],mas2[i]);	
+		mvaddch(mas1[i][0],mas1[i][1],mas2[i]);
+	
 	refresh();
 	while ((ch=getch())!='q'){
 		clear();
